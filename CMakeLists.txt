@@ -40,6 +40,7 @@ target_link_libraries(G4LaBr3Detector ${Geant4_LIBRARIES})
 set(G4LABR3DETECTOR_SCRIPTS
   macros/vis.mac
   macros/rotate.mac
+  macros/runElectronUniformISO.mac
 )
 
 foreach(_script ${G4LABR3DETECTOR_SCRIPTS})

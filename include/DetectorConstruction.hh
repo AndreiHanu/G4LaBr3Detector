@@ -44,64 +44,33 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         // Standard Materials
         G4Material* fMatWorld;
         G4Material* fMatHousing;
-        G4Material* fMatInnerHousing;
-        G4Material* fMatSiChip;
-        G4Material* fMatElastomer;
-        G4Material* fMatLBI;
-        G4Material* fMatRC;
-        G4Material* fMatRI;
-        G4Material* fMatBNCIns;
+        G4Material* fMatReflector;
+        G4Material* fMatLaBr3;
+        G4Material* fMatLightGuide;
     
         // Logical Volumes
         G4LogicalVolume* WorldLogical;
         G4LogicalVolume* SourceLogical;
         G4LogicalVolume* HousingLogical;
-        G4LogicalVolume* InnerHousingLogical;
-        G4LogicalVolume* ElastomerRingLogical;
-        G4LogicalVolume* LBILogical;
-        G4LogicalVolume* SiChipLogical;
-        G4LogicalVolume* ElastLogical;
-        G4LogicalVolume* RCLogical;
-        G4LogicalVolume* RILogical; 
-        G4LogicalVolume* BNCInsLogical;
+        G4LogicalVolume* ReflectorLogical;
+        G4LogicalVolume* LaBr3Logical;
+        G4LogicalVolume* LightGuideLogical;
     
         // Physical Volumes
         G4VPhysicalVolume* WorldPhysical;
         G4VPhysicalVolume* SourcePhysical;
         G4VPhysicalVolume* HousingPhysical;
-        G4VPhysicalVolume* InnerHousingPhysical;
-        G4VPhysicalVolume* ElastomerRingPhysical;
-        G4VPhysicalVolume* LBIPhysical;
-        G4VPhysicalVolume* SiChipPhysical;
-        G4VPhysicalVolume* ElastPhysical;
-        G4VPhysicalVolume* RCPhysical;
-        G4VPhysicalVolume* RIPhysical;
-        G4VPhysicalVolume* BNCInsPhysical;
+        G4VPhysicalVolume* ReflectorPhysical;
+        G4VPhysicalVolume* LaBr3Physical;
+        G4VPhysicalVolume* LightGuidePhysical;
     
         // Geometry Parameters
-        G4double HOUSING_OD;
-        G4double HOUSING_H;
-        G4double HOUSING_FRONT_T;
-        G4double HOUSING_FRONT_OD;
-        G4double HOUSING_BACK_T;
-        G4double HOUSING_SIDE_T;
-        G4double ELAST_RING_ID;
-        G4double ELAST_RING_OD;
-        G4double ELAST_RING_H;
-        G4double LBI_T;
-        G4double LBI_H;
-        G4double SiChip_OD;
-        G4double SiChip_H;
-        G4double ELAST_OD;
-        G4double ELAST_H;
-        G4double RC_OD;
-        G4double RC_H;
-        G4double RI_OD;
-        G4double RI_ID;
-        G4double RI_H;
-        G4double BNC_OD;
-        G4double BNC_H;
-        G4double BNC_INS_OD;
+        G4double fLaBr3Diameter;
+        G4double fLaBr3Length;
+        G4double fHousingThickness;
+        G4double fReflectorThickness;
+        G4double fLightGuideDiameter;
+        G4double fLightGuideThickness;
 
 	    // Rotation Angles
 	    G4double rotX;

@@ -178,7 +178,7 @@ void PhysicsList::SetCuts()
   	G4ProductionCuts* cuts;
   	
   	// Production cuts for the Si detector 
-  	regName = "Region_Si_Chip";
+  	regName = "Region_LaBr3";
   	region = G4RegionStore::GetInstance()->GetRegion(regName);
   	cuts = new G4ProductionCuts;
   	cuts->SetProductionCut(0.001*mm); // same cuts for gamma, e- and e+
@@ -218,9 +218,9 @@ void PhysicsList::NewPAIModel(const G4ParticleDefinition* part,
 	G4String partname = part->GetParticleName();
   	if(modname == "pai") {
     	G4PAIModel* pai = new G4PAIModel(part,"PAIModel");
-    	fConfig->SetExtraEmModel(partname,procname,pai,"Region_Si_Chip", 0.0,100.*TeV,pai);
+    	fConfig->SetExtraEmModel(partname,procname,pai,"Region_LaBr3", 0.0,100.*TeV,pai);
   	} else if(modname == "pai_photon") {
     	G4PAIPhotModel* pai = new G4PAIPhotModel(part,"PAIPhotModel");
-    	fConfig->SetExtraEmModel(partname,procname,pai,"Region_Si_Chip", 0.0,100.*TeV,pai);
+    	fConfig->SetExtraEmModel(partname,procname,pai,"Region_LaBr3", 0.0,100.*TeV,pai);
   	}
 }

@@ -11,8 +11,8 @@
 #########################
 # Set detector parameters
 #
-/G4SiDetector/DetectorAngle 0. deg
-/G4SiDetector/SourceRadius {R} cm
+/G4LaBr3Detector/DetectorAngle 0. deg
+/G4LaBr3Detector/SourceRadius {R} cm
 
 ##########################
 # Set name for the output file
