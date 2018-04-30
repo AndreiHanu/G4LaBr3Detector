@@ -197,7 +197,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	// Note: The actual radius of the Source solid will be slightly smaller (0.1 mm) than
 	// specified in the macro files in order to allow tracking the incident kinetic energy
 	// of particles.
-	G4VSolid* SourceSolid = new G4Sphere("SourceSolid", 0., sourceRadius/2, 0., 360.0*degree, 0., 180.0*degree);
+	// NOTE: Make sure the outer radius is smaller than the source radius otherwise you'll
+	// get "track stuck" warnings during navigation.
+	G4Sphere* SourceSolid = new G4Sphere("SourceSolid", sourceRadius - 1.5*mm, sourceRadius - 0.5*mm, 0., 360.0*degree, 0., 180.0*degree);
+	SetSourceInnerRadius(SourceSolid->GetInnerRadius());
 
 	SourceLogical = 
 		new G4LogicalVolume(SourceSolid,						// The Solid
@@ -239,7 +242,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		new G4PVPlacement(	G4Transform3D(Housing_Rot,Housing_Trans),	// Translation
 							HousingLogical,					// Logical volume
 							"Housing_Physical",		        // Name
-							SourceLogical,					// Mother volume
+							WorldLogical,					// Mother volume
 							false,							// Unused boolean parameter
 							0,								// Copy number
 							fCheckOverlaps);				// Overlap Check
@@ -324,13 +327,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   	// Visualisation attributes
   	
   	// World Volume (White)
-  	G4VisAttributes* Vis_World = new G4VisAttributes(G4Colour(1.,1.,1.,0.1));
-  	Vis_World->SetForceWireframe(true);
-  	WorldLogical->SetVisAttributes(Vis_World);
+  	G4VisAttributes* Vis_World = new G4VisAttributes(G4Colour(0.,0.,0.,0.));
+  	Vis_World->SetForceWireframe(false);
+  	//WorldLogical->SetVisAttributes(Vis_World);
+	WorldLogical->SetVisAttributes(G4VisAttributes::GetInvisible());
 
 	// Source Volume (Light Yellow)
-    G4VisAttributes* Vis_Source = new G4VisAttributes(G4Colour(1.,1.,1.,0.));
-    Vis_Source->SetForceWireframe(true);
+    G4VisAttributes* Vis_Source = new G4VisAttributes(G4Colour(0.1,0.1,0.1,0.1));
+    Vis_Source->SetForceWireframe(false);
     SourceLogical->SetVisAttributes(Vis_Source);
 
     // Housing Volume (Gray)
@@ -381,13 +385,13 @@ void DetectorConstruction::ConstructSDandField()
 	G4MultiFunctionalDetector* SourceScorer = new G4MultiFunctionalDetector("Source");
 	G4SDManager::GetSDMpointer()->AddNewDetector(SourceScorer);	
 	G4SDManager::GetSDMpointer()->SetVerboseLevel(0);
-	WorldLogical->SetSensitiveDetector(SourceScorer);
+	SourceLogical->SetSensitiveDetector(SourceScorer);
 
-	G4VPrimitiveScorer* kinEGamma = new G4PSIncidentKineticEnergy("kinEGamma");
+	G4VPrimitiveScorer* kinEGamma = new G4PSIncidentKineticEnergy("kinEGamma", fCurrent_Out);
 	kinEGamma->SetFilter(gammaFilter);
     SourceScorer->RegisterPrimitive(kinEGamma);
 
-	G4VPrimitiveScorer* kinEElectron = new G4PSIncidentKineticEnergy("kinEElectron");
+	G4VPrimitiveScorer* kinEElectron = new G4PSIncidentKineticEnergy("kinEElectron", fCurrent_Out);
 	kinEElectron->SetFilter(electronFilter);
     SourceScorer->RegisterPrimitive(kinEElectron);
 }
@@ -420,6 +424,13 @@ void DetectorConstruction::SetSourceRadius(G4double val)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void DetectorConstruction::SetSourceInnerRadius(G4double val)
+{
+	sourceInnerRadius = val;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 G4double DetectorConstruction::GetDetectorAngle()
 {
 	// Return the detector angle
@@ -430,8 +441,16 @@ G4double DetectorConstruction::GetDetectorAngle()
 
 G4double DetectorConstruction::GetSourceRadius()
 {
-	// Return the detector angle
+	// Return the source radius
 	return sourceRadius;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4double DetectorConstruction::GetSourceInnerRadius()
+{
+	// Return the source inner radius
+	return sourceInnerRadius;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
