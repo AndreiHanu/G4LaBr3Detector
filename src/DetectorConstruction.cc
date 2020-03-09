@@ -64,6 +64,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Sphere.hh"
+#include "G4Polycone.hh"
 
 // Boolean operations on volumes
 #include "G4UnionSolid.hh"
@@ -97,12 +98,12 @@ WorldPhysical(0)
 	fLaBr3Length = 50.8*mm;
 
 	// Housing
-	fHousingThickness = 0.5*mm;
+	fHousingThickness = 1.*mm;
 
 	// Reflector
 	// The LaBr3(Ce) crystal is wrapped in a material acting as a Lambertian reflector surface
 	// which is designed to increase light collection efficiency 
-	fReflectorThickness = 2.0*mm;
+	fReflectorThickness = 1.5*mm;
 
 	// Light Guide
 	fLightGuideDiameter = fLaBr3Diameter;
@@ -151,6 +152,7 @@ void DetectorConstruction::DefineMaterials()
 	fMatReflector = nistManager->FindOrBuildMaterial("G4_TEFLON");
     fMatLaBr3 = LaBr3;
     fMatLightGuide = nistManager->FindOrBuildMaterial("G4_Pyrex_Glass");
+	fMatDetInterior = nistManager->FindOrBuildMaterial("G4_AIR");
   	
   	// Print materials
 	//G4cout << *(G4Material::GetMaterialTable()) << G4endl;
@@ -220,29 +222,107 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	////////////////////////////////////////////////////////////////////////
 	// Construct the detector housing	
 	
-	G4VSolid* HousingSolid = new G4Tubs("Housing_Solid",
-										0., 
-										fLaBr3Diameter/2 + fReflectorThickness + fHousingThickness, 
-										(fLaBr3Length + fReflectorThickness + fLightGuideThickness + fHousingThickness)/2,
-										0.,
-										360.*deg);
+	// G4VSolid* HousingSolid = new G4Tubs("Housing_Solid",
+	// 									0., 
+	// 									fLaBr3Diameter/2 + fReflectorThickness + fHousingThickness, 
+	// 									(fLaBr3Length + fReflectorThickness + fLightGuideThickness + fHousingThickness)/2,
+	// 									0.,
+	// 									360.*deg);
+	
+	// HousingLogical = 
+	// 	new G4LogicalVolume(HousingSolid,					// The Solid
+	// 						fMatHousing,    				// Material
+	// 						"Housing_Logical");     		// Name
+
+	// // Rotation, Translation, and Transformation of the detector			
+	// G4RotationMatrix Housing_Rot = G4RotationMatrix();
+	// Housing_Rot.rotateX(rotX);
+	
+	// G4ThreeVector Housing_Trans = G4ThreeVector(0,0,0);
+			
+	// HousingPhysical = 
+	// 	new G4PVPlacement(	G4Transform3D(Housing_Rot,Housing_Trans),	// Translation
+	// 						HousingLogical,					// Logical volume
+	// 						"Housing_Physical",		        // Name
+	// 						WorldLogical,					// Mother volume
+	// 						false,							// Unused boolean parameter
+	// 						0,								// Copy number
+	// 						fCheckOverlaps);				// Overlap Check
+
+	////////////////////////////////////////////////////////////////////////
+	// Construct the detector housing	
+	// numZPlanes
+	// zPlane
+	// rInner
+	// rOuter
+	G4double startPhi = 0.0*deg;
+   	G4double endPhi = 360.0*deg;
+   	G4int nrRZ = 6;
+	G4double detOffset = (fLaBr3Length + fReflectorThickness + fLightGuideThickness + fHousingThickness)/2;
+   	G4double zPlane[]={detOffset, detOffset-38.84*mm, detOffset-58.26*mm, detOffset-104.38*mm, detOffset-132.25*mm, detOffset-224.00*mm};
+   	G4double rInner[]={0, 0, 0, 0, 0, 0};
+	G4double rOuter[]={27.9*mm, 27.9*mm, 40.05*mm, 40.05*mm, 29.35*mm, 29.35*mm};
+
+   	G4VSolid* HousingSolid = new G4Polycone("Detector_Housing_Solid",
+	   											startPhi,
+												endPhi,
+												nrRZ,
+												zPlane,
+												rInner,
+												rOuter);
 	
 	HousingLogical = 
-		new G4LogicalVolume(HousingSolid,					// The Solid
+		new G4LogicalVolume(HousingSolid,				// The Solid
 							fMatHousing,    				// Material
-							"Housing_Logical");     		// Name
+							"Detector_Housing_Logical");	// Name
 
 	// Rotation, Translation, and Transformation of the detector			
-	G4RotationMatrix Housing_Rot = G4RotationMatrix();
-	Housing_Rot.rotateX(rotX);
+	G4RotationMatrix Housing_Rot = G4RotationMatrix(0,0,0);
 	
 	G4ThreeVector Housing_Trans = G4ThreeVector(0,0,0);
 			
 	HousingPhysical = 
 		new G4PVPlacement(	G4Transform3D(Housing_Rot,Housing_Trans),	// Translation
 							HousingLogical,					// Logical volume
-							"Housing_Physical",		        // Name
+							"Detector_Housing_Physical",	// Name
 							WorldLogical,					// Mother volume
+							false,							// Unused boolean parameter
+							0,								// Copy number
+							fCheckOverlaps);				// Overlap Check
+
+	////////////////////////////////////////////////////////////////////////
+	// Construct the detector interior (air)	
+	// numZPlanes
+	// zPlane
+	// rInner
+	// rOuter
+	G4double startPhi2 = 0.0*deg;
+   	G4double endPhi2 = 360.0*deg; 
+	G4int nrRZ2 = 6;
+   	G4double zPlane2[]={detOffset - fHousingThickness, detOffset-38.84*mm, detOffset-58.26*mm, detOffset-104.38*mm, detOffset-132.25*mm, detOffset-224.00*mm + fHousingThickness};
+   	G4double rInner2[]={0, 0, 0, 0, 0, 0};
+	G4double rOuter2[]={27.9*mm - fHousingThickness, 27.9*mm - fHousingThickness, 40.05*mm - fHousingThickness, 40.05*mm - fHousingThickness, 29.35*mm - fHousingThickness, 29.35*mm - fHousingThickness};
+   	
+
+   	G4VSolid* HousingInteriorSolid = new G4Polycone("Detector_Interior_Solid",
+	   											startPhi2,
+												endPhi2,
+												nrRZ2,
+												zPlane2,
+												rInner2,
+												rOuter2);
+	
+	HousingInteriorLogical = 
+		new G4LogicalVolume(HousingInteriorSolid,				// The Solid
+							fMatDetInterior,    			// Material
+							"Detector_Interior_Logical");	// Name
+			
+	HousingInteriorPhysical = 
+		new G4PVPlacement(	0,								// No Rotation
+							G4ThreeVector(0,0,0),
+							HousingInteriorLogical,				// Logical volume
+							"Detector_Interior_Physical",	// Name
+							HousingLogical,				// Mother volume
 							false,							// Unused boolean parameter
 							0,								// Copy number
 							fCheckOverlaps);				// Overlap Check
@@ -266,7 +346,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							G4ThreeVector(0,0,-fHousingThickness/2),
 							ReflectorLogical,				// Logical volume
 							"Reflector_Physical",			// Name
-							HousingLogical,					// Mother volume
+							HousingInteriorLogical,					// Mother volume
 							false,							// Unused boolean parameter
 							0,								// Copy number
 							fCheckOverlaps);				// Overlap Check
@@ -341,6 +421,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VisAttributes* Vis_Housing = new G4VisAttributes(G4Colour(0.5,0.5,0.5,.2));
     Vis_Housing->SetForceWireframe(false);
     HousingLogical->SetVisAttributes(Vis_Housing);
+
+	// Housing Interior (Cyan)
+    G4VisAttributes* Vis_Housing_Interior = new G4VisAttributes(G4Colour(0.,1.0,0.,0.1));
+    Vis_Housing_Interior->SetForceWireframe(false);
+    HousingInteriorLogical->SetVisAttributes(Vis_Housing_Interior);
 
 	// Reflector (Cyan)
     G4VisAttributes* Vis_Reflector = new G4VisAttributes(G4Colour(0.,1.0,1.0,0.2));

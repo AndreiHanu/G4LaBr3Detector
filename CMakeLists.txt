@@ -47,11 +47,11 @@ set(G4LABR3DETECTOR_SCRIPTS
   macros/runGammaUniformLinISO.mac
   macros/runGammaUniformLogISO.mac
   macros/runGammaPowerISO.mac
-  macros/runCo60ISO.mac
-  macros/runCs137ISO.mac
-  macros/runSr90ISO.mac
   macros/runCl36ISO.mac
-  macros/runPb210ISO.mac
+  macros/runCo60ISO.mac
+  macros/runKr85ISO.mac
+  macros/runCs137ISO.mac
+  macros/runSr90Y90ISO.mac
 )
 
 foreach(_script ${G4LABR3DETECTOR_SCRIPTS})

@@ -1,7 +1,7 @@
 ##########################
 # Set the aliases for the rest of the macro file
 /control/alias R 25
-/control/alias N_R 2000000
+/control/alias N_R 100000000
 /control/listAlias
 
 #########################
@@ -47,9 +47,9 @@
 #########################
 # Set ion type and kinetic energy
 #
-/gps/particle ion
-/gps/ion 55 137 0 0
-/gps/energy 0 keV
+/gps/particle gamma
+/gps/ene/type Mono
+/gps/energy 661.62 keV 
 
 #########################
 # Run particles

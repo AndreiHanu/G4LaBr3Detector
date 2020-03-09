@@ -51,11 +51,13 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         G4Material* fMatReflector;
         G4Material* fMatLaBr3;
         G4Material* fMatLightGuide;
+        G4Material* fMatDetInterior;
     
         // Logical Volumes
         G4LogicalVolume* WorldLogical;
         G4LogicalVolume* SourceLogical;
         G4LogicalVolume* HousingLogical;
+        G4LogicalVolume* HousingInteriorLogical;
         G4LogicalVolume* ReflectorLogical;
         G4LogicalVolume* LaBr3Logical;
         G4LogicalVolume* LightGuideLogical;
@@ -64,6 +66,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         G4VPhysicalVolume* WorldPhysical;
         G4VPhysicalVolume* SourcePhysical;
         G4VPhysicalVolume* HousingPhysical;
+        G4VPhysicalVolume* HousingInteriorPhysical;
         G4VPhysicalVolume* ReflectorPhysical;
         G4VPhysicalVolume* LaBr3Physical;
         G4VPhysicalVolume* LightGuidePhysical;
